@@ -48,30 +48,5 @@ test.only('Login and Purchase order test', async ({ page }) => {
     const thankYouMessage = page.locator('h1:has-text("THANKYOU FOR THE ORDER.")');
     await expect(thankYouMessage).toBeVisible();
 
-    // const cvvInput = page.locator('div.title:has-text("CVV Code ?")').locator('..').locator('input');
-    // await cvvInput.fill('123');
-
-    // const nameOnCardInput = page.locator('div.title:has-text("Name on Card")').locator('..').locator('input');
-    // await nameOnCardInput.fill('John Doe');
-
-    // const couponInput = page.locator('input[name="coupon"]');
-    // await couponInput.fill('SAVE20');
-
-    // const countryInput = page.locator('input[placeholder="Select Country"]');
-    // await countryInput.fill('ph');
-    // await page.waitForTimeout(1000);
-    // await countryInput.fill('');
-    // await countryInput.fill('phi');
-    // await page.keyboard.press('Backspace');
-
-    // const philippinesElement = page.locator('span:has-text("Philippines")');
-    // await philippinesElement.click();
-
-    // const placeOrderButton = page.locator('a:has-text("Place Order")');
-    // await placeOrderButton.click();
-
-    // const thankYouMessage = page.locator('h1:has-text("THANKYOU FOR THE ORDER.")');
-    // await expect(thankYouMessage).toBeVisible();
-
     await page.waitForTimeout(3000);
 });
