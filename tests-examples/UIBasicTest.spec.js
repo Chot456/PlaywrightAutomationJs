@@ -1,4 +1,10 @@
 const {test, expect} = require('@playwright/test');
+const { LoginPage } = require('../pageObjects/LoginPage.js');
+const { DashboardPage } = require('../pageObjects/DashboardPage.js');
+const { NavigationPage } = require('../pageObjects/NavigationPage.js');
+const { CartPage } = require('../pageObjects/CartPage.js');
+const { CheckoutPage } = require('../pageObjects/CheckoutPage.js');
+const { OrderCompletePage } = require('../pageObjects/OrderCompletePage.js');
 
 // npx playwright test UIBasicTest.spec.js --headed
 // npx playwright show-report
@@ -23,49 +29,49 @@ test('Registration test', async ({ page }) => {
     
 });
 
-test('Login and Purchase order test', async ({ page }) => {
+test.only('Login and Purchase order test', async ({ page }) => {
     const projectName = 'ADIDAS ORIGINAL';
-    await page.goto('https://rahulshettyacademy.com/client/');
-    await page.locator("#userEmail").fill("john11@gmail.com");
-    await page.locator("#userPassword").fill("P@ssword321");
-    await page.locator("#login").click();
-    const signOutButton = page.locator('button:has-text("Sign Out")');
-    
-    const addToCartButton = page.locator('h5:has-text("' + projectName + '")')
-    .locator('..') // Go up to the parent div
-    .locator('button:has-text("Add To Cart")');
-    await addToCartButton.click();
+    const loginPage = new LoginPage(page);
+    const dashboardPage = new DashboardPage(page);
+    const navigationPage = new NavigationPage(page);
+    const cartPage = new CartPage(page);
+    const checkoutPage = new CheckoutPage(page);
+    const orderCompletePage = new OrderCompletePage(page, expect);
 
-    const cartButton = page.locator('nav button:has-text("Cart")');
-    await cartButton.click();
-
-    const checkoutButton = page.locator('button:has-text("Checkout")');
-    await checkoutButton.click();
-
-    const cvvInput = page.locator('div.title:has-text("CVV Code ?")').locator('..').locator('input');
-    await cvvInput.fill('123');
-
-    const nameOnCardInput = page.locator('div.title:has-text("Name on Card")').locator('..').locator('input');
-    await nameOnCardInput.fill('John Doe');
-
-    const couponInput = page.locator('input[name="coupon"]');
-    await couponInput.fill('SAVE20');
-
-    const countryInput = page.locator('input[placeholder="Select Country"]');
-    await countryInput.fill('ph');
-    await page.waitForTimeout(1000); // Wait for the dropdown to appear
-    await countryInput.fill('');
-    await countryInput.fill('phi');
-    await page.keyboard.press('Backspace');
-
-    const philippinesElement = page.locator('span:has-text("Philippines")');
-    await philippinesElement.click();
-
-    const placeOrderButton = page.locator('a:has-text("Place Order")');
-    await placeOrderButton.click();
-
+    await loginPage.goTo();
+    await loginPage.validLogin("john11@gmail.com", "P@ssword321");
+    await dashboardPage.clickAddToCartButton(projectName);
+    await navigationPage.goToCartPage();
+    await cartPage.clickCheckoutButton();
+    await checkoutPage.fillCheckoutForm('123', 'John Doe', 'SAVE20', 'Philippines');
+    await checkoutPage.placeOrderButton.click();
     const thankYouMessage = page.locator('h1:has-text("THANKYOU FOR THE ORDER.")');
     await expect(thankYouMessage).toBeVisible();
+
+    // const cvvInput = page.locator('div.title:has-text("CVV Code ?")').locator('..').locator('input');
+    // await cvvInput.fill('123');
+
+    // const nameOnCardInput = page.locator('div.title:has-text("Name on Card")').locator('..').locator('input');
+    // await nameOnCardInput.fill('John Doe');
+
+    // const couponInput = page.locator('input[name="coupon"]');
+    // await couponInput.fill('SAVE20');
+
+    // const countryInput = page.locator('input[placeholder="Select Country"]');
+    // await countryInput.fill('ph');
+    // await page.waitForTimeout(1000);
+    // await countryInput.fill('');
+    // await countryInput.fill('phi');
+    // await page.keyboard.press('Backspace');
+
+    // const philippinesElement = page.locator('span:has-text("Philippines")');
+    // await philippinesElement.click();
+
+    // const placeOrderButton = page.locator('a:has-text("Place Order")');
+    // await placeOrderButton.click();
+
+    // const thankYouMessage = page.locator('h1:has-text("THANKYOU FOR THE ORDER.")');
+    // await expect(thankYouMessage).toBeVisible();
 
     await page.waitForTimeout(3000);
 });
